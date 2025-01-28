@@ -1,0 +1,20 @@
+JobBatchName = rpc-geom-val_modifying-isfront_ttbar-2017-step1
+universe = vanilla
+executable = run/ttbar-2017-step1.sh
+getenv = True
+
+should_transfer_files = YES
+when_to_transfer_output = ON_EXIT
+
+arguments = $(Process) \
+            /cms/ldap_home/sjws5411/workspace-ui20/rpc-geom/CMSSW_15_0_0_pre2 \
+            /cms/ldap_home/sjws5411/workspace-ui20/workspace-batch/250128-geom-val-ui20/config/ttbar-2017/TTbar_13TeV_TuneCUETP8M1_cfi_GEN_SIM.py \
+            root://cms-xrdr.private.lo:2094//xrd/store/user/joshin/rpc-geom/validation-modifying-isfront/ttbar-2017/step1
+
+output = log/ttbar-2017/step1/job$(Process).out
+error = log/ttbar-2017/step1/job$(Process).err
+log = log/ttbar-2017/step1/job$(Process).log
+
++JobFlavour = "longlunch" 
+
+queue 10
