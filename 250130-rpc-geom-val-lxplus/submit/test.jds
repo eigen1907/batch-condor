@@ -1,14 +1,11 @@
-JobBatchName = rpc-geom-val_modified-isfront_ttbar-2017
-executable = run.sh
+batch_name = joshin_test
+executable = run/test.sh
 universe = vanilla
 getenv = True
 
-+SingularityBind = "/cvmfs, /afs/cern.ch/user/j/joshin"
-+SingularityImage = "cvmfs/unpacked.cern.ch/registry.hub.docker.com/cmssw/el8:x86_64"
-
-should_transfer_files = YES
 when_to_transfer_output = ON_EXIT
-transfer_input_files = config/ttbar-2017/TTbar_13TeV_TuneCUETP8M1_cfi_GEN_SIM.py, \
+transfer_input_files = run/test.sh, \
+                       config/ttbar-2017/TTbar_13TeV_TuneCUETP8M1_cfi_GEN_SIM.py, \
                        config/ttbar-2017/step2_DIGI_L1_DIGI2RAW_HLT.py, \
                        config/ttbar-2017/step3_RAW2DIGI_L1Reco_RECO_RECOSIM_PAT_VALIDATION_DQM.py
 
@@ -17,14 +14,17 @@ arguments = /afs/cern.ch/user/j/joshin/workspace-lxplus/rpc-geom/CMSSW_15_0_X_20
             step2_DIGI_L1_DIGI2RAW_HLT.py \
             step3_RAW2DIGI_L1Reco_RECO_RECOSIM_PAT_VALIDATION_DQM.py
 
+output = log/test/job-$(Process).out
+error = log/test/job-$(Process).err
+log = log/test/job-$(Process).log
+
 transfer_output_files = step1.root, step2.root, step3.root, step3_inDQM.root
 transfer_output_remaps = "step1.root = /eos/user/j/joshin/rpc-geom/CMSSW_15_0_0_pre2-modified-isFront/ttbar-2017/step1-$(Process).root; \
                           step2.root = /eos/user/j/joshin/rpc-geom/CMSSW_15_0_0_pre2-modified-isFront/ttbar-2017/step2-$(Process).root; \
                           step3.root = /eos/user/j/joshin/rpc-geom/CMSSW_15_0_0_pre2-modified-isFront/ttbar-2017/step3-$(Process).root; \
                           step3_inDQM.root = /eos/user/j/joshin/rpc-geom/CMSSW_15_0_0_pre2-modified-isFront/ttbar-2017/step3_inDQM-$(Process).root;"
 
-output = log/ttbar-2017/job$(Process).outß
-error = log/ttbar-2017/job$(Process).err
-log = log/ttbar-2017/condor.log
++SingularityBind = "/cvmfs, /afs/cern.ch/user/j/joshin"
++SingularityImage = "/cvmfs/unpacked.cern.ch/registry.hub.docker.com/cmssw/el8:x86_64"
 
 queue 10
