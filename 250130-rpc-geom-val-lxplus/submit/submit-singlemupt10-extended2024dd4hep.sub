@@ -1,0 +1,26 @@
+JobBatchName = rpc-geom-val-singlemupt10-extended2024dd4hep
+universe = vanilla
+getenv = True
+
+executable = run/run-singlemupt10-extended2024dd4hep.sh
+transfer_executable = True
+
+should_transfer_files = YES
+transfer_input_files = config/singlemupt10-extended2024dd4hep.sh
+
+arguments = /afs/cern.ch/user/j/joshin/workspace-lxplus/rpc-geom/val-unmodified/CMSSW_15_0_0_pre2 \
+            singlemupt10-extended2024dd4hep.sh \
+            root://eosuser.cern.ch//eos/user/j/joshin/rpc-geom/val-unmodified/singlemupt10-extended2024dd4hep \
+            $(Process)
+
+output = log/singlemupt10-extended2024dd4hep/job-$(Process).out
+error = log/singlemupt10-extended2024dd4hep/job-$(Process).err
+log = log/singlemupt10-extended2024dd4hep/job-$(Process).log
+
+when_to_transfer_output = ON_EXIT
+
++SingularityBind = "/cvmfs, /afs/cern.ch/user/j/joshin"
++SingularityImage = "/cvmfs/unpacked.cern.ch/registry.hub.docker.com/cmssw/el9:x86_64"
++MaxRuntime = 3600
+
+queue 10
