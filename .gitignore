@@ -2,3 +2,4 @@
 *.root
 *.err
 *.out
+*.DS_Store
