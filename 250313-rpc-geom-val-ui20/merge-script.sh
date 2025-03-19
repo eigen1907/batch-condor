@@ -1,16 +1,17 @@
 #!/bin/bash
 
-#mm activate root-py39
+bash merge-pt-geom.sh pt1 current-geometry
+bash merge-pt-geom.sh pt1 iRPC-added-geometry
+bash merge-pt-geom.sh pt1 target-geometry
 
-bash merge-era-geom.sh 2024 current
-bash merge-era-geom.sh 2023 current
+bash merge-pt-geom.sh pt10 current-geometry
+bash merge-pt-geom.sh pt10 iRPC-added-geometry
+bash merge-pt-geom.sh pt10 target-geometry
 
-bash merge-eta-geom.sh eta-m2.5-m1.5 iRPC-added-geometry
-bash merge-eta-geom.sh eta-m2.5-m1.5 stagger-fixed-iRPC-added-geometry
-bash merge-eta-geom.sh eta-m2.5-m1.5 stagger-fixed-fine-tuned-geometry
-bash merge-eta-geom.sh eta-m2.5-m1.5 stagger-fixed-geometry
+bash merge-pt-geom.sh pt100 current-geometry
+bash merge-pt-geom.sh pt100 iRPC-added-geometry
+bash merge-pt-geom.sh pt100 target-geometry
 
-bash merge-eta-geom.sh base iRPC-added-geometry
-bash merge-eta-geom.sh base stagger-fixed-fine-tuned-geometry
-bash merge-eta-geom.sh base stagger-fixed-geometry
-bash merge-eta-geom.sh base stagger-fixed-iRPC-added-geometry
+bash merge-pt-geom.sh pt1000 current-geometry
+bash merge-pt-geom.sh pt1000 iRPC-added-geometry
+bash merge-pt-geom.sh pt1000 target-geometry
