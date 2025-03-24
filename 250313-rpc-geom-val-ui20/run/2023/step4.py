@@ -4,6 +4,10 @@
 # Source: /local/reps/CMSSW/CMSSW/Configuration/Applications/python/ConfigBuilder.py,v 
 # with command line options: step4 -s HARVESTING:@standardValidationNoHLT+@standardDQMFakeHLT+@miniAODValidation+@miniAODDQM+@nanoAODDQM --conditions auto:phase1_2023_realistic --mc --geometry DD4hepExtended2023 --scenario pp --filetype DQM --era Run3_2023 -n 100 --filein file:step3_inDQM.root --fileout file:step4.root
 import FWCore.ParameterSet.Config as cms
+import FWCore.ParameterSet.VarParsing as VarParsing
+
+options = VarParsing.VarParsing('analysis')
+options.parseArguments()
 
 from Configuration.Eras.Era_Run3_2023_cff import Run3_2023
 
@@ -28,7 +32,7 @@ process.maxEvents = cms.untracked.PSet(
 
 # Input source
 process.source = cms.Source("DQMRootSource",
-    fileNames = cms.untracked.vstring('file:step3_inDQM.root')
+    fileNames = cms.untracked.vstring(options.inputFiles)
 )
 
 process.options = cms.untracked.PSet(
@@ -77,6 +81,7 @@ process.configurationMetadata = cms.untracked.PSet(
 # Other statements
 from Configuration.AlCa.GlobalTag import GlobalTag
 process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:phase1_2023_realistic', '')
+
 
 # Path and EndPath definitions
 process.alcaHarvesting = cms.Path()

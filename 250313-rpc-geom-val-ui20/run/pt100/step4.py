@@ -4,6 +4,10 @@
 # Source: /local/reps/CMSSW/CMSSW/Configuration/Applications/python/ConfigBuilder.py,v 
 # with command line options: step4 -s HARVESTING:@standardValidation+@standardDQM+@ExtraHLT+@miniAODValidation+@miniAODDQM+@nanoAODDQM --conditions auto:phase1_2025_realistic --mc --geometry DD4hepExtended2025 --scenario pp --filetype DQM --era Run3_2025 -n 10 --filein file:step3_inDQM.root --fileout file:step4.root
 import FWCore.ParameterSet.Config as cms
+import FWCore.ParameterSet.VarParsing as VarParsing
+
+options = VarParsing.VarParsing('analysis')
+options.parseArguments()
 
 from Configuration.Eras.Era_Run3_2025_cff import Run3_2025
 
@@ -28,7 +32,7 @@ process.maxEvents = cms.untracked.PSet(
 
 # Input source
 process.source = cms.Source("DQMRootSource",
-    fileNames = cms.untracked.vstring('file:step3_inDQM.root')
+    fileNames = cms.untracked.vstring(options.inputFiles)
 )
 
 process.options = cms.untracked.PSet(

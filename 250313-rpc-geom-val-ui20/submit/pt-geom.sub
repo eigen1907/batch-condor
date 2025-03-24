@@ -23,7 +23,7 @@ when_to_transfer_output = ON_EXIT
 +SingularityBind = "/cvmfs, /cms/ldap_home/sjws5411/"
 +SingularityImage = "/cvmfs/unpacked.cern.ch/registry.hub.docker.com/cmssw/el9:x86_64"
 
-+MaxRuntime = 10800
-request_memory = 8192
++MaxRuntime = 43200
+request_memory = 16384
 
 queue 100
