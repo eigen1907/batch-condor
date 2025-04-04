@@ -1,0 +1,21 @@
+accounting_group=group_cms
+
+JobBatchName = $(config_name)
+universe = vanilla
+getenv = True
+
+transfer_executable = True
+executable = executable.sh
+
+arguments = $(process) $(config_path) $(output_path)
+
+output = log/$(config_name)/process-$(process).out
+error = log/$(config_name)/process-$(process).err
+log = log/$(config_name)/process-$(process).log
+
+when_to_transfer_output = ON_EXIT
+
++MaxRuntime = 43200
+request_memory = 16384
+
+queue 100
