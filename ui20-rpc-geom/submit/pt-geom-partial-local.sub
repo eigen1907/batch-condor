@@ -1,0 +1,27 @@
+accounting_group=group_cms
+cmssw1 = /cms/ldap_home/sjws5411/workspace-ui20/rpc-geom/validation/$(geometry1)/CMSSW_15_0_0
+cmssw2 = /cms/ldap_home/sjws5411/workspace-ui20/rpc-geom/validation/$(geometry2)/CMSSW_15_0_0
+output_dir = root://cms-xrdr.private.lo:2094//xrd/store/user/joshin/rpc-geom/validation-pt/$(pt)/$(geometry1)-$(geometry2)
+
+JobBatchName = rpc-geom-val-$(pt)-$(geometry1)-$(geometry2)
+universe = vanilla
+getenv = True
+
+transfer_executable = True
+executable = run/$(pt)/executable.sh
+
+should_transfer_files = YES
+transfer_input_files = run/$(pt)/step1.py, run/$(pt)/step2.py, run/$(pt)/step3.py
+
+arguments = $(Process) $(cmssw1) $(cmssw2) $(output_dir)
+
+output = log/$(pt)/$(geometry1)-$(geometry2)/$(Process).out
+error = log/$(pt)/$(geometry1)-$(geometry2)/$(Process).err
+log = log/$(pt)/$(geometry1)-$(geometry2)/$(Process).log
+
+when_to_transfer_output = ON_EXIT
+
++MaxRuntime = 43200
+request_memory = 16384
+
+queue 100
