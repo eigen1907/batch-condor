@@ -1,24 +1,25 @@
 #!/bin/bash
 
 process=$1
-config_path=$2
-output_path=$3
+cmssw_path=$2
+config_path=$3
+output_path=$4
 
+cmssw-el9
 source /cvmfs/cms.cern.ch/cmsset_default.sh
-cd ${config_path}
+cd ${cmssw_path}
 cmsenv
-cd -
 
-cp ${config_path}/*.py .
+mkdir -p ${output_path}
 
-cmsRun step1.py
-cmsRun step2.py
-cmsRun step3.py
+cmsRun ${config_path}/step1.py \
+    outputFile=${output_path}/step1_${process}.root
 
-cp -r step1.root ${output_path}/step1_${process}.root
-cp -r step2.root ${output_path}/step2_${process}.root
-cp -r step3.root ${output_path}/step3_${process}.root
-cp -r step3_inDQM.root ${output_path}/step3_inDQM_${process}.root
-cp -r output.root ${output_path}/output_${process}.root
+cmsRun ${config_path}/step2.py \
+    inputFiles=file:${output_path}/step1_${process}.root \
+    outputFile=${output_path}/step2_${process}.root
 
-rm *.root
+cmsRun ${config_path}/step3.py \
+    inputFiles=file:${output_path}/step2_${process}.root \
+    outputFile=${output_path}/step3_${process}.root \
+    outputTFile=${output_path}/output_${process}.root

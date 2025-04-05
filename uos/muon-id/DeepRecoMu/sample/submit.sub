@@ -1,17 +1,17 @@
 accounting_group=group_cms
 
-JobBatchName = $(config_name)
+JobBatchName = $(job_name)
 universe = vanilla
-getenv = True
 
+getenv = True
 transfer_executable = True
 executable = executable.sh
 
-arguments = $(process) $(config_path) $(output_path)
+arguments = $(process) $(cmssw_path) $(config_path) $(output_path)
 
-output = log/$(config_name)/process-$(process).out
-error = log/$(config_name)/process-$(process).err
-log = log/$(config_name)/process-$(process).log
+output = log/$(job_name)/process-$(process).out
+error = log/$(job_name)/process-$(process).err
+log = log/$(job_name)/process-$(process).log
 
 when_to_transfer_output = ON_EXIT
 

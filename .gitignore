@@ -3,3 +3,4 @@
 *.err
 *.out
 *.DS_Store
+*.nfs*
