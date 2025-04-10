@@ -9,11 +9,13 @@ config=/cms/ldap_home/sjws5411/workspace-ui20/batch-condor/ui20/rpc-geom/dqm/ste
 cd ${cmssw_path}
 cmsenv
 cd -
-mkdir -p dqm-output
-cd dqm-output
+mkdir -p dqm-output/${sample}-${geometry}
+cd dqm-output/${sample}-${geometry}
 
 cmsRun ${config} \
     inputFiles_load=/cms/ldap_home/sjws5411/workspace-ui20/batch-condor/ui20/rpc-geom/dqm/dqm-list/${sample}-${geometry}.list \
     filePrepend=file:
 
-mv DQM*.root ${sample}-${geometry}.root
+cd ..
+mv ${sample}-${geometry}/DQM*.root ${sample}-${geometry}.root
+rm -r ${sample}-${geometry}

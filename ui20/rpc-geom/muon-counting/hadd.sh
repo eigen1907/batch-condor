@@ -1,3 +1,5 @@
+#micromamba activate root-py312
+
 samples=(2025-mu-pt10 2025-mu-pt100 2025-mu-pt1000)
 geoms=(current-geometry iRPC-added-geometry target-geometry)
 

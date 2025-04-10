@@ -1,7 +1,8 @@
 #!/bin/bash
 
 samples=(2025-mu-pt10 2025-mu-pt100 2025-mu-pt1000 2025-ZMM)
-geoms=(current-geometry iRPC-added-geometry target-geometry)
+#geoms=(current-geometry iRPC-added-geometry target-geometry)
+geoms=(target-geometry-change-matching)
 
 #samples=(2025-mu-pt10)
 #geoms=(current-geometry)
