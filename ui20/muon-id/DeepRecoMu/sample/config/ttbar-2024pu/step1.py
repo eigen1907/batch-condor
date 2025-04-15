@@ -4,6 +4,12 @@
 # Source: /local/reps/CMSSW/CMSSW/Configuration/Applications/python/ConfigBuilder.py,v 
 # with command line options: TTbar_14TeV_TuneCP5_cfi -s GEN,SIM -n 10 --conditions auto:phase1_2024_realistic --beamspot DBrealistic --datatier GEN-SIM --eventcontent FEVTDEBUG --geometry DB:Extended --era Run3_2024 --relval 9000,100 --fileout file:step1.root
 import FWCore.ParameterSet.Config as cms
+import FWCore.ParameterSet.VarParsing as VarParsing
+
+options = VarParsing.VarParsing('analysis')
+options.outputFile = 'step1.root'
+
+options.parseArguments()
 
 from Configuration.Eras.Era_Run3_2024_cff import Run3_2024
 
@@ -26,7 +32,7 @@ process.load('Configuration.StandardSequences.EndOfProcess_cff')
 process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
 
 process.maxEvents = cms.untracked.PSet(
-    input = cms.untracked.int32(10),
+    input = cms.untracked.int32(100),
     output = cms.optional.untracked.allowed(cms.int32,cms.PSet)
 )
 
@@ -82,7 +88,7 @@ process.FEVTDEBUGoutput = cms.OutputModule("PoolOutputModule",
         dataTier = cms.untracked.string('GEN-SIM'),
         filterName = cms.untracked.string('')
     ),
-    fileName = cms.untracked.string('file:step1.root'),
+    fileName = cms.untracked.string(options.outputFile),
     outputCommands = process.FEVTDEBUGEventContent.outputCommands,
     splitLevel = cms.untracked.int32(0)
 )
@@ -95,6 +101,10 @@ if hasattr(process, "DDDetectorESProducerFromDB"): process.DDDetectorESProducerF
 process.genstepfilter.triggerConditions=cms.vstring("generation_step")
 from Configuration.AlCa.GlobalTag import GlobalTag
 process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:phase1_2024_realistic', '')
+
+from IOMC.RandomEngine.RandomServiceHelper import RandomNumberServiceHelper
+randSvc = RandomNumberServiceHelper(process.RandomNumberGeneratorService)
+randSvc.populate()
 
 process.generator = cms.EDFilter("Pythia8ConcurrentGeneratorFilter",
     PythiaParameters = cms.PSet(

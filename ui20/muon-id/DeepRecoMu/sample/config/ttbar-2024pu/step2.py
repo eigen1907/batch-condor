@@ -4,6 +4,13 @@
 # Source: /local/reps/CMSSW/CMSSW/Configuration/Applications/python/ConfigBuilder.py,v 
 # with command line options: step2 -s DIGI:pdigi_valid,L1,DIGI2RAW,HLT:@relval2024 --conditions auto:phase1_2024_realistic --datatier GEN-SIM-DIGI-RAW -n 10 --eventcontent FEVTDEBUGHLT --geometry DB:Extended --era Run3_2024 --pileup Run3_Flat55To75_PoissonOOTPU --pileup_input das:/RelValMinBias_14TeV/CMSSW_14_1_0_pre7-140X_mcRun3_2024_realistic_v21_STD_RegeneratedGS_2024_noPU-v1/GEN-SIM --filein file:step1.root --fileout file:step2.root
 import FWCore.ParameterSet.Config as cms
+import FWCore.ParameterSet.VarParsing as VarParsing
+
+options = VarParsing.VarParsing('analysis')
+options.inputFiles = ['file:step1.root']
+options.outputFile = 'step2.root'
+
+options.parseArguments()
 
 from Configuration.Eras.Era_Run3_2024_cff import Run3_2024
 
@@ -25,14 +32,14 @@ process.load('Configuration.StandardSequences.EndOfProcess_cff')
 process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
 
 process.maxEvents = cms.untracked.PSet(
-    input = cms.untracked.int32(10),
+    input = cms.untracked.int32(-1),
     output = cms.optional.untracked.allowed(cms.int32,cms.PSet)
 )
 
 # Input source
 process.source = cms.Source("PoolSource",
     dropDescendantsOfDroppedBranches = cms.untracked.bool(False),
-    fileNames = cms.untracked.vstring('file:step1.root'),
+    fileNames = cms.untracked.vstring(options.inputFiles),
     inputCommands = cms.untracked.vstring(
         'keep *',
         'drop *_genParticles_*_*',
@@ -109,7 +116,14 @@ process.FEVTDEBUGHLToutput = cms.OutputModule("PoolOutputModule",
 # Additional output definition
 
 # Other statements
-process.mix.input.fileNames = cms.untracked.vstring([])
+process.mix.input.fileNames = cms.untracked.vstring([
+    "/store/relval/CMSSW_14_2_1/RelValMinBias_14TeV/GEN-SIM/142X_mcRun3_2025_realistic_v4_STD_Winter25_2025_noPU-v1/2590000/12ccaa64-3d68-4be9-b41b-9597ead2ed5c.root",
+    "/store/relval/CMSSW_14_2_1/RelValMinBias_14TeV/GEN-SIM/142X_mcRun3_2025_realistic_v4_STD_Winter25_2025_noPU-v1/2590000/72c38997-9299-4433-a609-6311707f5286.root",
+    "/store/relval/CMSSW_14_2_1/RelValMinBias_14TeV/GEN-SIM/142X_mcRun3_2025_realistic_v4_STD_Winter25_2025_noPU-v1/2590000/3f07a906-b6be-4810-af73-911de64d2334.root",
+    "/store/relval/CMSSW_14_2_1/RelValMinBias_14TeV/GEN-SIM/142X_mcRun3_2025_realistic_v4_STD_Winter25_2025_noPU-v1/2590000/7ab1626e-d646-4b90-b823-c40f9f1a6a70.root",
+    "/store/relval/CMSSW_14_2_1/RelValMinBias_14TeV/GEN-SIM/142X_mcRun3_2025_realistic_v4_STD_Winter25_2025_noPU-v1/2590000/7897255c-63ee-4092-9e3e-a2f651912a5c.root",
+    "/store/relval/CMSSW_14_2_1/RelValMinBias_14TeV/GEN-SIM/142X_mcRun3_2025_realistic_v4_STD_Winter25_2025_noPU-v1/2590000/9fa25600-1e86-4183-ad11-3faf4600029c.root"
+])
 process.mix.digitizers = cms.PSet(process.theDigitizersValid)
 from Configuration.AlCa.GlobalTag import GlobalTag
 process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:phase1_2024_realistic', '')
