@@ -7,6 +7,7 @@ getenv = True
 transfer_executable = True
 executable = executable.sh
 
+transfer_input_files = /tmp/x509up_u556951266
 arguments = $(process) $(cmssw_path) $(config_path) $(output_path)
 
 output = log/$(job_name)/process-$(process).out

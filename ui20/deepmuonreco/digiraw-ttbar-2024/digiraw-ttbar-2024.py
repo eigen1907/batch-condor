@@ -2,16 +2,28 @@
 # using: 
 # Revision: 1.19 
 # Source: /local/reps/CMSSW/CMSSW/Configuration/Applications/python/ConfigBuilder.py,v 
-# with command line options: SingleMu_cfi -s GEN,SIM -n 10 --conditions auto:phase1_2025_realistic --beamspot DBrealistic --datatier GEN-SIM --eventcontent FEVTDEBUG --geometry DD4hepExtended2025 --era Run3_2025 --relval 9000,100 --fileout file:step1.root
+# with command line options: step2 -s DIGI,L1,DIGI2RAW,HLT:@fake2 -n -1 --mc --python_filename digiraw-ttbar-2024.py --conditions auto:phase1_2024_realistic --datatier GEN-SIM-DIGI-RAW --eventcontent FEVTDEBUGHLT --geometry DD4hepExtended2024 --era Run3_2024 --filein file:gensim-ttbar-2024.root --fileout file:digiraw-ttbar-2024.root --customise_commands=process.load('CommonTools.UtilAlgos.TFileService_cfi')
 import FWCore.ParameterSet.Config as cms
 import FWCore.ParameterSet.VarParsing as VarParsing
 
 options = VarParsing.VarParsing('analysis')
+
+options.inputFiles = ['file:step1.root']
+options.outputFile = 'step2.root'
+
+options.register(
+    'nEvents',
+    1000,
+    VarParsing.VarParsing.multiplicity.singleton,
+    VarParsing.VarParsing.varType.int,
+    'Number of events to process'
+)
+
 options.parseArguments()
 
-from Configuration.Eras.Era_Run3_2025_cff import Run3_2025
+from Configuration.Eras.Era_Run3_2024_cff import Run3_2024
 
-process = cms.Process('SIM',Run3_2025)
+process = cms.Process('HLT',Run3_2024)
 
 # import of standard configurations
 process.load('Configuration.StandardSequences.Services_cff')
@@ -19,23 +31,45 @@ process.load('SimGeneral.HepPDTESSource.pythiapdt_cfi')
 process.load('FWCore.MessageService.MessageLogger_cfi')
 process.load('Configuration.EventContent.EventContent_cff')
 process.load('SimGeneral.MixingModule.mixNoPU_cfi')
-process.load('Configuration.Geometry.GeometryDD4hepExtended2025Reco_cff')
-process.load('Configuration.Geometry.GeometryDD4hepExtended2025_cff')
+process.load('Configuration.Geometry.GeometryDD4hepExtended2024Reco_cff')
 process.load('Configuration.StandardSequences.MagneticField_cff')
-process.load('Configuration.StandardSequences.Generator_cff')
-process.load('IOMC.EventVertexGenerators.VtxSmearedRealistic_cfi')
-process.load('GeneratorInterface.Core.genFilterSummary_cff')
-process.load('Configuration.StandardSequences.SimIdeal_cff')
+process.load('Configuration.StandardSequences.Digi_cff')
+process.load('Configuration.StandardSequences.SimL1Emulator_cff')
+process.load('Configuration.StandardSequences.DigiToRaw_cff')
+process.load('HLTrigger.Configuration.HLT_Fake2_cff')
 process.load('Configuration.StandardSequences.EndOfProcess_cff')
 process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
 
 process.maxEvents = cms.untracked.PSet(
-    input = cms.untracked.int32(10000),
+    input = cms.untracked.int32(options.nEvents),
     output = cms.optional.untracked.allowed(cms.int32,cms.PSet)
 )
 
 # Input source
-process.source = cms.Source("EmptySource")
+process.source = cms.Source("PoolSource",
+    dropDescendantsOfDroppedBranches = cms.untracked.bool(False),
+    fileNames = cms.untracked.vstring(options.inputFiles),
+    inputCommands = cms.untracked.vstring(
+        'keep *',
+        'drop *_genParticles_*_*',
+        'drop *_genParticlesForJets_*_*',
+        'drop *_kt4GenJets_*_*',
+        'drop *_kt6GenJets_*_*',
+        'drop *_iterativeCone5GenJets_*_*',
+        'drop *_ak4GenJets_*_*',
+        'drop *_ak7GenJets_*_*',
+        'drop *_ak8GenJets_*_*',
+        'drop *_ak4GenJetsNoNu_*_*',
+        'drop *_ak8GenJetsNoNu_*_*',
+        'drop *_genCandidatesForMET_*_*',
+        'drop *_genParticlesForMETAllVisible_*_*',
+        'drop *_genMetCalo_*_*',
+        'drop *_genMetCaloAndNonPrompt_*_*',
+        'drop *_genMetTrue_*_*',
+        'drop *_genMetIC5GenJs_*_*'
+    ),
+    secondaryFileNames = cms.untracked.vstring()
+)
 
 process.options = cms.untracked.PSet(
     IgnoreCompletely = cms.untracked.vstring(),
@@ -71,80 +105,59 @@ process.options = cms.untracked.PSet(
 
 # Production Info
 process.configurationMetadata = cms.untracked.PSet(
-    annotation = cms.untracked.string('SingleMu_cfi'),
+    annotation = cms.untracked.string('step2 nevts:-1'),
     name = cms.untracked.string('Applications'),
     version = cms.untracked.string('$Revision: 1.19 $')
 )
 
 # Output definition
 
-process.FEVTDEBUGoutput = cms.OutputModule("PoolOutputModule",
-    SelectEvents = cms.untracked.PSet(
-        SelectEvents = cms.vstring('generation_step')
-    ),
+process.FEVTDEBUGHLToutput = cms.OutputModule("PoolOutputModule",
     dataset = cms.untracked.PSet(
-        dataTier = cms.untracked.string('GEN-SIM'),
+        dataTier = cms.untracked.string('GEN-SIM-DIGI-RAW'),
         filterName = cms.untracked.string('')
     ),
     fileName = cms.untracked.string(options.outputFile),
-    outputCommands = process.FEVTDEBUGEventContent.outputCommands,
+    outputCommands = process.FEVTDEBUGHLTEventContent.outputCommands,
     splitLevel = cms.untracked.int32(0)
 )
 
 # Additional output definition
 
 # Other statements
-process.genstepfilter.triggerConditions=cms.vstring("generation_step")
 from Configuration.AlCa.GlobalTag import GlobalTag
-process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:phase1_2025_realistic', '')
-
-from IOMC.RandomEngine.RandomServiceHelper import RandomNumberServiceHelper
-randSvc = RandomNumberServiceHelper(process.RandomNumberGeneratorService)
-randSvc.populate()
-
-process.generator = cms.EDFilter("Pythia8PtGun",
-    PGunParameters = cms.PSet(
-        AddAntiParticle = cms.bool(False),
-        MaxEta = cms.double(2.5),
-        MaxPhi = cms.double(3.14159265359),
-        MaxPt = cms.double(10.01),
-        MinEta = cms.double(-2.5),
-        MinPhi = cms.double(-3.14159265359),
-        MinPt = cms.double(9.99),
-        ParticleID = cms.vint32(-13)
-    ),
-    PythiaParameters = cms.PSet(
-        parameterSets = cms.vstring()
-    ),
-    Verbosity = cms.untracked.int32(0),
-    firstRun = cms.untracked.uint32(1),
-    psethack = cms.string('single mu')
-)
-
+process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:phase1_2024_realistic', '')
 
 # Path and EndPath definitions
-process.generation_step = cms.Path(process.pgen)
-process.simulation_step = cms.Path(process.psim)
-process.genfiltersummary_step = cms.EndPath(process.genFilterSummary)
+process.digitisation_step = cms.Path(process.pdigi)
+process.L1simulation_step = cms.Path(process.SimL1Emulator)
+process.digi2raw_step = cms.Path(process.DigiToRaw)
 process.endjob_step = cms.EndPath(process.endOfProcess)
-process.FEVTDEBUGoutput_step = cms.EndPath(process.FEVTDEBUGoutput)
+process.FEVTDEBUGHLToutput_step = cms.EndPath(process.FEVTDEBUGHLToutput)
 
 # Schedule definition
-process.schedule = cms.Schedule(process.generation_step,process.genfiltersummary_step,process.simulation_step,process.endjob_step,process.FEVTDEBUGoutput_step)
+# process.schedule imported from cff in HLTrigger.Configuration
+process.schedule.insert(0, process.digitisation_step)
+process.schedule.insert(1, process.L1simulation_step)
+process.schedule.insert(2, process.digi2raw_step)
+process.schedule.extend([process.endjob_step,process.FEVTDEBUGHLToutput_step])
 from PhysicsTools.PatAlgos.tools.helpers import associatePatAlgosToolsTask
 associatePatAlgosToolsTask(process)
 
-#Setup FWK for multithreaded
-process.options.numberOfConcurrentLuminosityBlocks = 1
-process.options.eventSetup.numberOfConcurrentIOVs = 1
-# filter all path with the production filter sequence
-for path in process.paths:
-	getattr(process,path).insert(0, process.generator)
+# customisation of the process.
 
+# Automatic addition of the customisation function from HLTrigger.Configuration.customizeHLTforMC
+from HLTrigger.Configuration.customizeHLTforMC import customizeHLTforMC 
+
+#call to customisation function customizeHLTforMC imported from HLTrigger.Configuration.customizeHLTforMC
+process = customizeHLTforMC(process)
+
+# End of customisation functions
 
 
 # Customisation from command line
 
+process.load('CommonTools.UtilAlgos.TFileService_cfi')
 # Add early deletion of temporary data products to reduce peak memory need
 from Configuration.StandardSequences.earlyDeleteSettings_cff import customiseEarlyDelete
 process = customiseEarlyDelete(process)

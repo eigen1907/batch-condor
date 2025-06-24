@@ -1,0 +1,20 @@
+accounting_group=group_cms
+
+JobBatchName = $(job_name)
+universe = vanilla
+
+getenv = True
+transfer_executable = True
+executable = condor-executable.sh
+
+arguments = $(process) $(cmssw_path) $(config_path) $(output_path) $(n_events)
+
+output = log/process-$(process).out
+error = log/process-$(process).err
+log = log/process-$(process).log
+
+when_to_transfer_output = ON_EXIT
+
+request_memory = 16384
+
+queue $(n_queue)

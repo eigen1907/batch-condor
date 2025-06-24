@@ -18,4 +18,4 @@ when_to_transfer_output = ON_EXIT
 +MaxRuntime = 43200
 request_memory = 16384
 
-queue 300
+queue 100

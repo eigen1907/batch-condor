@@ -1,8 +1,10 @@
 #!/bin/bash
 
-samples=(2025-mu-pt10 2025-mu-pt100 2025-mu-pt1000)
-geoms=(current-geometry iRPC-added-geometry target-geometry target-geometry-change-matching)
-#geoms=(target-geometry-change-matching)
+#samples=(2025-mu-pt10 2025-mu-pt100 2025-mu-pt1000)
+samples=(2030-mu)
+
+#geoms=(current-geometry iRPC-added-geometry target-geometry)
+geoms=(rpcf-2030-v3 rpcf-2030-v4 rpcf-2030-v5 rpcf-2030-v6)
 
 mkdir -p dqm-list
 for sample in "${samples[@]}"; do

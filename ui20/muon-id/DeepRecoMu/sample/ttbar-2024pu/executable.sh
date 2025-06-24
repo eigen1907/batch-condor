@@ -1,4 +1,5 @@
 #!/bin/bash
+export X509_USER_PROXY=./x509up_u556951266
 
 process=$1
 cmssw_path=$2

@@ -2,16 +2,16 @@
 # using: 
 # Revision: 1.19 
 # Source: /local/reps/CMSSW/CMSSW/Configuration/Applications/python/ConfigBuilder.py,v 
-# with command line options: SingleMu_cfi -s GEN,SIM -n 10 --conditions auto:phase1_2025_realistic --beamspot DBrealistic --datatier GEN-SIM --eventcontent FEVTDEBUG --geometry DD4hepExtended2025 --era Run3_2025 --relval 9000,100 --fileout file:step1.root
+# with command line options: TTbar_14TeV_TuneCP5_cfi -s GEN,SIM -n 10 --conditions auto:phase2_realistic_T33 --beamspot DBrealisticHLLHC --datatier GEN-SIM --eventcontent FEVTDEBUG --geometry ExtendedRun4D116 --era Phase2C17I13M9 --relval 9000,100 --fileout file:step1.root
 import FWCore.ParameterSet.Config as cms
 import FWCore.ParameterSet.VarParsing as VarParsing
 
 options = VarParsing.VarParsing('analysis')
 options.parseArguments()
 
-from Configuration.Eras.Era_Run3_2025_cff import Run3_2025
+from Configuration.Eras.Era_Phase2C17I13M9_cff import Phase2C17I13M9
 
-process = cms.Process('SIM',Run3_2025)
+process = cms.Process('SIM',Phase2C17I13M9)
 
 # import of standard configurations
 process.load('Configuration.StandardSequences.Services_cff')
@@ -19,18 +19,18 @@ process.load('SimGeneral.HepPDTESSource.pythiapdt_cfi')
 process.load('FWCore.MessageService.MessageLogger_cfi')
 process.load('Configuration.EventContent.EventContent_cff')
 process.load('SimGeneral.MixingModule.mixNoPU_cfi')
-process.load('Configuration.Geometry.GeometryDD4hepExtended2025Reco_cff')
-process.load('Configuration.Geometry.GeometryDD4hepExtended2025_cff')
+process.load('Configuration.Geometry.GeometryExtendedRun4D116Reco_cff')
+process.load('Configuration.Geometry.GeometryExtendedRun4D116_cff')
 process.load('Configuration.StandardSequences.MagneticField_cff')
 process.load('Configuration.StandardSequences.Generator_cff')
-process.load('IOMC.EventVertexGenerators.VtxSmearedRealistic_cfi')
+process.load('IOMC.EventVertexGenerators.VtxSmearedRealisticHLLHC_cfi')
 process.load('GeneratorInterface.Core.genFilterSummary_cff')
 process.load('Configuration.StandardSequences.SimIdeal_cff')
 process.load('Configuration.StandardSequences.EndOfProcess_cff')
 process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
 
 process.maxEvents = cms.untracked.PSet(
-    input = cms.untracked.int32(10000),
+    input = cms.untracked.int32(1000),
     output = cms.optional.untracked.allowed(cms.int32,cms.PSet)
 )
 
@@ -96,7 +96,7 @@ process.FEVTDEBUGoutput = cms.OutputModule("PoolOutputModule",
 # Other statements
 process.genstepfilter.triggerConditions=cms.vstring("generation_step")
 from Configuration.AlCa.GlobalTag import GlobalTag
-process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:phase1_2025_realistic', '')
+process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:phase2_realistic_T33', '')
 
 from IOMC.RandomEngine.RandomServiceHelper import RandomNumberServiceHelper
 randSvc = RandomNumberServiceHelper(process.RandomNumberGeneratorService)
@@ -107,10 +107,10 @@ process.generator = cms.EDFilter("Pythia8PtGun",
         AddAntiParticle = cms.bool(False),
         MaxEta = cms.double(2.5),
         MaxPhi = cms.double(3.14159265359),
-        MaxPt = cms.double(10.01),
+        MaxPt = cms.double(1000.01),
         MinEta = cms.double(-2.5),
         MinPhi = cms.double(-3.14159265359),
-        MinPt = cms.double(9.99),
+        MinPt = cms.double(0.99),
         ParticleID = cms.vint32(-13)
     ),
     PythiaParameters = cms.PSet(
@@ -121,6 +121,8 @@ process.generator = cms.EDFilter("Pythia8PtGun",
     psethack = cms.string('single mu')
 )
 
+
+process.ProductionFilterSequence = cms.Sequence(process.generator)
 
 # Path and EndPath definitions
 process.generation_step = cms.Path(process.pgen)
@@ -133,13 +135,9 @@ process.FEVTDEBUGoutput_step = cms.EndPath(process.FEVTDEBUGoutput)
 process.schedule = cms.Schedule(process.generation_step,process.genfiltersummary_step,process.simulation_step,process.endjob_step,process.FEVTDEBUGoutput_step)
 from PhysicsTools.PatAlgos.tools.helpers import associatePatAlgosToolsTask
 associatePatAlgosToolsTask(process)
-
-#Setup FWK for multithreaded
-process.options.numberOfConcurrentLuminosityBlocks = 1
-process.options.eventSetup.numberOfConcurrentIOVs = 1
 # filter all path with the production filter sequence
 for path in process.paths:
-	getattr(process,path).insert(0, process.generator)
+	getattr(process,path).insert(0, process.ProductionFilterSequence)
 
 
 

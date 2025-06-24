@@ -1,8 +1,10 @@
 #!/bin/bash
 
-samples=(2025-mu-pt10 2025-mu-pt100 2025-mu-pt1000)
+#samples=(2025-mu-pt10 2025-mu-pt100 2025-mu-pt1000)
+samples=(2030-mu)
+geoms=(rpcf-2030-v3 rpcf-2030-v4 rpcf-2030-v5 rpcf-2030-v6)
+cmssw=CMSSW_15_0_0_pre3
 #geoms=(current-geometry iRPC-added-geometry target-geometry)
-geoms=(target-geometry-change-matching)
 
 #samples=(2025-mu-pt10)
 #geoms=(current-geometry)
@@ -10,7 +12,7 @@ geoms=(target-geometry-change-matching)
 for sample in "${samples[@]}"; do
     for geom in "${geoms[@]}"; do
         job_name=sample-${sample}-${geom}
-        cmssw_path=/cms/ldap_home/sjws5411/workspace-ui20/rpc-geom/validation/${geom}/CMSSW_15_0_0
+        cmssw_path=/cms/ldap_home/sjws5411/workspace-ui20/rpc-geom/validation-run4/${geom}/${cmssw}
         config_path=/cms/ldap_home/sjws5411/workspace-ui20/batch-condor/ui20/rpc-geom/config/${sample}
         output_path=root://cms-xrdr.private.lo:2094//xrd/store/user/joshin/rpc-geom/${sample}/${geom}
         
