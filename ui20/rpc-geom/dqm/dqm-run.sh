@@ -3,8 +3,13 @@
 sample=$1
 geometry=$2
 
-cmssw_path=/cms/ldap_home/sjws5411/workspace-ui20/rpc-geom/validation-run4/${geometry}/CMSSW_15_0_0_pre3
-config=/cms/ldap_home/sjws5411/workspace-ui20/batch-condor/ui20/rpc-geom/dqm/step4-2030.py
+# For Run 3
+cmssw_path=/cms/ldap_home/sjws5411/workspace-ui20/rpc-geom/validation-run4/${geometry}/CMSSW_15_0_0
+config=/cms/ldap_home/sjws5411/workspace-ui20/batch-condor/ui20/rpc-geom/dqm/step4-2025.py
+
+# For Run 4
+# cmssw_path=/cms/ldap_home/sjws5411/workspace-ui20/rpc-geom/validation-run4/${geometry}/CMSSW_15_0_0_pre3
+# config=/cms/ldap_home/sjws5411/workspace-ui20/batch-condor/ui20/rpc-geom/dqm/step4-2030.py
 
 cd ${cmssw_path}
 cmsenv

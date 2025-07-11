@@ -1,0 +1,20 @@
+accounting_group=group_cms
+
+JobBatchName = $(job_name)
+universe = vanilla
+
+getenv = True
+transfer_executable = True
+executable = executable.sh
+
+arguments = $(process) $(cmssw_path) $(config_path) $(output_path) $(min_phi) $(max_phi) $(max_events)
+
+output = log/$(job_name)/process-$(process).out
+error = log/$(job_name)/process-$(process).err
+log = log/$(job_name)/process-$(process).log
+
+when_to_transfer_output = ON_EXIT
+
+request_memory = 16384
+
+queue 1

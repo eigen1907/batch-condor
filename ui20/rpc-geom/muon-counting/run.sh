@@ -12,7 +12,7 @@ for sample in "${samples[@]}"; do
     for geom in "${geoms[@]}"; do
         job_name=muon-counting-${sample}-${geom}
         cmssw_path=/cms/ldap_home/sjws5411/workspace-ui20/rpc-geom/dev-val/CMSSW_15_0_0
-        config_path=/cms/ldap_home/sjws5411/workspace-ui20/batch-condor/ui20/rpc-geom/config/muon-counting
+        config_path=/cms/ldap_home/sjws5411/workspace-ui20/batch-condor/ui20/rpc-geom/muon-counting/muon-counting.py
         input_path=root://cms-xrdr.private.lo:2094//xrd/store/user/joshin/rpc-geom/${sample}/${geom}
         #input_path=file:/xrootd/store/user/joshin/rpc-geom/${sample}/${geom}
         output_path=root://cms-xrdr.private.lo:2094//xrd/store/user/joshin/rpc-geom/${sample}/${geom}
